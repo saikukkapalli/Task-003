@@ -45,6 +45,25 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::008482604258:role/GitHubActions-Terraform-Task03
           aws-region: ap-south-1
+      - name: Debug GitHub OIDC claims
+        if: github.event_name != 'pull_request'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Repository: $GITHUB_REPOSITORY"
+          echo "Branch: $GITHUB_REF_NAME"
+          echo "Requesting OIDC token..."
+          TOKEN=$(curl -sS -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+            "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=sts.amazonaws.com" \
+            | jq -r '.value')
+
+          if [ -z "$TOKEN" ] || [ "$TOKEN" = "null" ]; then
+            echo "Failed to obtain OIDC token"
+            exit 1
+          fi
+
+          python3 -c 'import os,json,base64; t=os.environ["TOKEN"]; p=t.split(".")[1]; print(json.dumps(json.loads(base64.urlsafe_b64decode(p+"="*(-len(p)%4))), indent=2))'
 
       - name: Check Terraform formatting
         run: terraform fmt -check -recursive
