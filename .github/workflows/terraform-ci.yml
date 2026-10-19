@@ -43,7 +43,7 @@ jobs:
         if: github.event_name != 'pull_request'
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::YOUR_AWS_ACCOUNT_ID:role/GitHubActions-Terraform-Task03
+          role-to-assume: arn:aws:iam::008482604258:role/GitHubActions-Terraform-Task03
           aws-region: ap-south-
 
       - name: Check Terraform formatting
