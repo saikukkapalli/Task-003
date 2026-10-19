@@ -19,6 +19,7 @@ on:
 
 permissions:
   contents: read
+  id-token: write
 
 jobs:
   terraform:
@@ -40,19 +41,18 @@ jobs:
       - name: Check formatting
         run: terraform fmt -check -recursive
 
+      - name: Configure AWS
+        if: github.event_name != 'pull_request'
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::008482604258:role/GitHubActions-Terraform-Task03
+          aws-region: ap-south-1
+
       - name: Initialize Terraform
         run: terraform init -input=false
 
       - name: Validate configuration
         run: terraform validate
-
-      - name: Configure AWS
-        if: github.event_name != 'pull_request'
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-south-1
 
       - name: Check infrastructure changes
         if: github.event_name != 'pull_request'
