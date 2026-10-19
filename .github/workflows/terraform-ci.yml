@@ -44,7 +44,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::008482604258:role/GitHubActions-Terraform-Task03
-          aws-region: ap-south-
+          aws-region: ap-south-1
 
       - name: Check Terraform formatting
         run: terraform fmt -check -recursive
