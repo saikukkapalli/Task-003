@@ -19,6 +19,7 @@ on:
 
 permissions:
   contents: read
+  id-token: write
 
 jobs:
   terraform-checks:
@@ -38,11 +39,22 @@ jobs:
         with:
           terraform_version: "1.15.6"
 
+      - name: Configure AWS credentials using OIDC
+        if: github.event_name != 'pull_request'
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::YOUR_AWS_ACCOUNT_ID:role/GitHubActions-Terraform-Task03
+          aws-region: ap-south-
+
       - name: Check Terraform formatting
         run: terraform fmt -check -recursive
 
       - name: Initialize Terraform without backend
-        run: terraform init -backend=false -input=false
+        run: terraform init -input=false
 
       - name: Validate Terraform configuration
         run: terraform validate
+
+      - name: Terraform Plan
+        if: github.event_name != 'pull_request'
+        run: terraform plan -input=false -no-color
