@@ -9,7 +9,7 @@ data "aws_ami" "ubuntu" {
   }
 }
 
-
+# iam role
 resource "aws_iam_role" "ec2" {
   name = "task3-ec2-s3-role"
 
