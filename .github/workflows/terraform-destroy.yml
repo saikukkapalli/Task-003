@@ -53,7 +53,7 @@ jobs:
     needs: plan-destroy
     runs-on: ubuntu-latest
 
-    # GitHub pauses this job until an authorized reviewer approves it.
+    
     environment:
       name: terraform-apply
 
